@@ -2,7 +2,7 @@
 
 A machine learning system for predicting loan default using gradient boosting models (XGBoost, LightGBM, CatBoost) with proper handling of class imbalance and anomaly detection for fraud identification.
 
-## 🎯 Project Overview
+## Project Overview
 
 This project demonstrates a production-ready approach to credit risk assessment, addressing the common challenge of imbalanced datasets (typically 5-10% default rate) through stratified sampling, class weight adjustment, and proper evaluation metrics.
 
@@ -13,7 +13,7 @@ This project demonstrates a production-ready approach to credit risk assessment,
 - Proper evaluation: Precision-Recall, ROC-AUC (not just accuracy)
 - Feature engineering pipeline
 
-## 📊 Dataset
+## Dataset
 
 **Source:** UCI German Credit Data  
 **Samples:** 1,000 credit applications  
@@ -21,7 +21,7 @@ This project demonstrates a production-ready approach to credit risk assessment,
 **Target:** Default (30%) vs Non-Default (70%)  
 **Challenge:** Class imbalance requiring careful handling
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 credit-risk-classification/
@@ -42,7 +42,7 @@ credit-risk-classification/
     └── feature_importance.png    # Feature importance plot
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Install Dependencies
 
@@ -63,7 +63,7 @@ python src/train_models.py
 python src/anomaly_detection.py
 ```
 
-## 📈 Results
+## Results
 
 ### Model Performance (Stratified Split, Class Weights)
 
@@ -85,7 +85,7 @@ python src/anomaly_detection.py
 - Potential fraud indicators (inconsistent income/debt ratios)
 - Recommend manual review for these cases
 
-## 🔑 Key Technical Approaches
+## Key Technical Approaches
 
 ### 1. **Stratified Sampling**
 ```python
@@ -124,7 +124,7 @@ model = xgb.XGBClassifier(scale_pos_weight=scale_pos_weight)
 - 68% precision (manageable false positive rate)
 - Actionable risk scores for decision-making
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - **Python 3.9+**
 - **Scikit-learn:** Preprocessing, metrics, train-test split
@@ -135,7 +135,7 @@ model = xgb.XGBClassifier(scale_pos_weight=scale_pos_weight)
 - **Pandas/NumPy:** Data manipulation
 - **Matplotlib/Seaborn:** Visualization
 
-## 📝 Lessons Learned
+## Lessons Learned
 
 1. **Class imbalance is critical** - Stratified sampling is non-negotiable
 2. **Accuracy is misleading** - Use precision-recall and ROC-AUC
@@ -143,7 +143,7 @@ model = xgb.XGBClassifier(scale_pos_weight=scale_pos_weight)
 4. **Feature engineering matters** - Debt-to-income ratio was most predictive
 5. **Threshold tuning** - Production systems need custom thresholds for business goals
 
-## 🔮 Future Improvements
+## Future Improvements
 
 - [ ] Hyperparameter tuning with GridSearchCV
 - [ ] SHAP values for model explainability
@@ -153,7 +153,7 @@ model = xgb.XGBClassifier(scale_pos_weight=scale_pos_weight)
 - [ ] API deployment with FastAPI
 - [ ] Monitoring dashboard for model drift
 
-## 📚 References
+## References
 
 - UCI Machine Learning Repository: German Credit Data
 - XGBoost Documentation: Handling Imbalanced Data
