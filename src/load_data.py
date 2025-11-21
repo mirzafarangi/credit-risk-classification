@@ -177,7 +177,7 @@ def main():
     
     # Save features and target
     X.to_csv(output_dir / "X_processed.csv", index=False)
-    pd.DataFrame(y, columns=['target']).to_csv(output_dir / "y_processed.csv", index=False)
+    pd.DataFrame({'target': y.values}).to_csv(output_dir / "y_processed.csv", index=False)
     
     print(f"\n💾 Saved processed data:")
     print(f"   Features: {output_dir / 'X_processed.csv'}")

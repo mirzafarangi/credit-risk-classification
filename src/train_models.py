@@ -26,7 +26,24 @@ def load_processed_data():
     """Load preprocessed data"""
     data_dir = Path(__file__).parent.parent / "data"
     X = pd.read_csv(data_dir / "X_processed.csv")
-    y = pd.read_csv(data_dir / "y_processed.csv")['target']
+    y_df = pd.read_csv(data_dir / "y_processed.csv")
+    
+    # Validate data was loaded correctly
+    if y_df.empty or 'target' not in y_df.columns:
+        raise ValueError(
+            "Error: y_processed.csv is empty or missing 'target' column.\n"
+            "Please re-run: python src/load_data.py"
+        )
+    
+    y = y_df['target']
+    
+    # Verify shapes match
+    if len(X) != len(y):
+        raise ValueError(
+            f"Error: X has {len(X)} samples but y has {len(y)} samples.\n"
+            "Please re-run: python src/load_data.py"
+        )
+    
     return X, y
 
 
@@ -207,11 +224,12 @@ def plot_results(results, y_test):
     # 1. Model Comparison Bar Plot
     ax = axes[0, 0]
     metrics = ['ROC-AUC', 'Precision', 'Recall', 'F1-Score']
+    metric_keys = ['roc_auc', 'precision', 'recall', 'f1']  # Actual keys in results dict
     x = np.arange(len(results))
     width = 0.2
     
-    for i, metric in enumerate(metrics):
-        values = [results[m][metric.lower().replace('-', '_')] for m in results]
+    for i, (metric, key) in enumerate(zip(metrics, metric_keys)):
+        values = [results[m][key] for m in results]
         ax.bar(x + i*width, values, width, label=metric)
     
     ax.set_xlabel('Model')

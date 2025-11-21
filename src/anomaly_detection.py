@@ -148,7 +148,9 @@ def plot_anomaly_analysis(X, anomaly_labels, anomaly_scores, y):
     # 2. PCA Visualization
     ax = axes[0, 1]
     pca = PCA(n_components=2, random_state=42)
-    X_pca = pca.fit_transform(X)
+    # Handle NaN values for PCA (fill with median)
+    X_clean = X.fillna(X.median())
+    X_pca = pca.fit_transform(X_clean)
     
     # Plot normal and anomalies
     ax.scatter(X_pca[anomaly_labels == 1, 0], X_pca[anomaly_labels == 1, 1], 
