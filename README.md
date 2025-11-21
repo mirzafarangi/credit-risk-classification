@@ -2,24 +2,24 @@
 
 A machine learning system for predicting loan default using gradient boosting models (XGBoost, LightGBM, CatBoost) with proper handling of class imbalance and anomaly detection for fraud identification.
 
-## Project Overview
+## 🎯 Project Overview
 
-This project demonstrates a production-ready approach to credit risk assessment, addressing the common challenge of imbalanced datasets (typically 5-10% default rate) through stratified sampling, class weight adjustment, and proper evaluation metrics.
+This project demonstrates a production-ready approach to credit risk assessment, addressing the challenge of imbalanced datasets through stratified sampling, class weight adjustment, and proper evaluation metrics.
 
 **Key Features:**
 - Multi-model comparison: XGBoost, LightGBM, CatBoost
-- Class imbalance handling: Stratified sampling, class weights, SMOTE
+- Class imbalance handling: Stratified sampling, class weights
 - Anomaly detection: Isolation Forest for fraud identification
 - Proper evaluation: Precision-Recall, ROC-AUC (not just accuracy)
-- Feature engineering pipeline
+- Feature engineering pipeline (30 features including 10 engineered)
 
-## Dataset
+## 📊 Dataset
 
 **Source:** UCI German Credit Data  
 **Samples:** 1,000 credit applications  
-**Features:** 20 attributes (credit history, employment, purpose, etc.)  
+**Features:** 20 base attributes (credit history, employment, purpose, duration, etc.)  
 **Target:** Default (30%) vs Non-Default (70%)  
-**Challenge:** Class imbalance requiring careful handling
+**Challenge:** Class imbalance (1:2.3 ratio) requiring careful handling
 
 ## Project Structure
 
@@ -63,27 +63,46 @@ python src/train_models.py
 python src/anomaly_detection.py
 ```
 
-## Results
+## 📈 Results
 
 ### Model Performance (Stratified Split, Class Weights)
 
 | Model | ROC-AUC | Precision | Recall | F1-Score |
 |-------|---------|-----------|--------|----------|
-| **CatBoost** | **0.79** | **0.68** | **0.73** | **0.70** |
-| XGBoost | 0.77 | 0.65 | 0.71 | 0.68 |
-| LightGBM | 0.76 | 0.64 | 0.69 | 0.66 |
+| **CatBoost** | **0.788** | **0.594** | **0.633** | **0.613** |
+| LightGBM | 0.763 | 0.571 | 0.533 | 0.552 |
+| XGBoost | 0.751 | 0.545 | 0.500 | 0.522 |
 
 **Best Model:** CatBoost with class weight adjustment
-- Correctly identifies 73% of defaults (Recall)
-- 68% of flagged loans are actual defaults (Precision)
-- ROC-AUC: 0.79 (good discrimination)
+- **ROC-AUC: 0.788** - Good discrimination between default and non-default
+- **Recall: 63.3%** - Correctly identifies 2 out of 3 defaults
+- **Precision: 59.4%** - About 6 out of 10 flagged loans are actual defaults
+- **Overall Accuracy: 76%** on test set (200 samples)
 
 ### Anomaly Detection Results
 
-**Isolation Forest identified 87 anomalous credit applications (8.7%)**
-- High-risk profiles with unusual feature combinations
-- Potential fraud indicators (inconsistent income/debt ratios)
-- Recommend manual review for these cases
+**Isolation Forest identified 100 anomalous credit applications (10.0%)**
+- **Default rate among normal applications:** 28.4%
+- **Default rate among anomalous applications:** 44.0%
+- **Risk multiplier:** 1.5x higher default rate in anomalies
+- Successfully identifies high-risk profiles with unusual feature patterns
+- Provides risk stratification (Critical/High/Medium/Low) for manual review
+
+### Visualizations
+
+All results visualizations are saved in the `results/` folder:
+
+![Model Comparison](results/model_comparison.png)
+*Figure 1: Performance comparison across XGBoost, LightGBM, and CatBoost*
+
+![ROC Curves](results/roc_curves.png)
+*Figure 2: ROC curves showing model discrimination capability*
+
+![Precision-Recall Curves](results/precision_recall_curves.png)
+*Figure 3: Precision-recall trade-offs for imbalanced classification*
+
+![Anomaly Detection](results/anomaly_detection_analysis.png)
+*Figure 4: Anomaly detection analysis with PCA visualization and risk distribution*
 
 ## Key Technical Approaches
 
@@ -120,28 +139,29 @@ model = xgb.XGBClassifier(scale_pos_weight=scale_pos_weight)
 - Business loses money on every missed default
 
 **This Solution:** Stratified sampling + class weights + proper metrics
-- Catches 73% of defaults (Recall)
-- 68% precision (manageable false positive rate)
+- Catches 63.3% of defaults (Recall) - 2 out of 3 defaults identified
+- 59.4% precision (manageable false positive rate)
 - Actionable risk scores for decision-making
+- Anomaly detection provides additional 1.5x risk signal
 
-## Technologies Used
+## 🛠️ Technologies Used
 
 - **Python 3.9+**
-- **Scikit-learn:** Preprocessing, metrics, train-test split
-- **XGBoost:** Gradient boosting (scale_pos_weight for imbalance)
-- **LightGBM:** Fast gradient boosting (is_unbalance parameter)
-- **CatBoost:** Gradient boosting with categorical handling
-- **Imbalanced-learn:** SMOTE for oversampling experiments
-- **Pandas/NumPy:** Data manipulation
-- **Matplotlib/Seaborn:** Visualization
+- **Scikit-learn:** Preprocessing, metrics, train-test split, Isolation Forest
+- **XGBoost:** Gradient boosting with scale_pos_weight for class imbalance
+- **LightGBM:** Fast gradient boosting with is_unbalance parameter
+- **CatBoost:** Gradient boosting with auto_class_weights
+- **Pandas/NumPy:** Data manipulation and feature engineering
+- **Matplotlib/Seaborn:** Visualization and results plotting
 
-## Lessons Learned
+## 📚 Key Learnings
 
-1. **Class imbalance is critical** - Stratified sampling is non-negotiable
-2. **Accuracy is misleading** - Use precision-recall and ROC-AUC
-3. **Class weights > SMOTE** - Easier to implement, similar results
-4. **Feature engineering matters** - Debt-to-income ratio was most predictive
-5. **Threshold tuning** - Production systems need custom thresholds for business goals
+1. **Stratified sampling is critical** - Maintains class distribution across train/test splits (30% default rate preserved)
+2. **Class weights are effective** - Scale_pos_weight of 2.33 significantly improved minority class detection
+3. **Proper metrics matter** - ROC-AUC and precision-recall reveal true model performance with imbalanced data
+4. **Feature engineering adds value** - 10 engineered features improved model discrimination
+5. **Anomaly detection complements classification** - Isolation Forest identifies high-risk profiles with 1.5x default rate
+6. **Model selection matters** - CatBoost outperformed XGBoost and LightGBM with auto_class_weights
 
 ## Future Improvements
 
